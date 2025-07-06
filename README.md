@@ -1,11 +1,6 @@
-# EscNotes
+![EscNotes - Print Notes in ESC/POS](https://n3voa7iw09.ufs.sh/f/77uq7v2CF9iENyB3Rvw8LjAITy1inQPgxOJfuz0YhcbHZmG7)
+
 Take notes and quickly turn them into physically actionable receipts using the power of ESC/POS.
-
-- Turn development tickets into actual tickets
-- Take note of some critical information you cannot lose
-- Print secret keys in a OCR-viable piece of media
-- ... and many more uses!
-
 
 This weekend project originates from the Tauri, React & TS in Vite template and leverages Tailwind with shadcn/ui. 
 
