@@ -5,7 +5,7 @@ Take notes and quickly turn them into physically actionable receipts using the p
 This weekend project originates from the Tauri, React & TS in Vite template and leverages Tailwind with shadcn/ui. 
 
 > **Contributing**
-Any outside contribution is much appreciated! There is lots of low-hanging fruit here so feel free to open a PR.
+Any outside contribution is much appreciated! There are lots of low-hanging fruits here so feel free to open a PR.
 
 ## Features
 - Custom markup for rich ESC/POS output
