@@ -319,10 +319,10 @@ export function NoteEditor() {
   }
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-screen flex flex-col relative">
       {/* Print Error Alert */}
       {printError && (
-        <div className="flex-shrink-0 bg-destructive/10 border-b border-destructive/20 p-4">
+        <div className="bg-destructive/10 border-b border-destructive/20 p-4">
           <div className="flex items-start space-x-3">
             <AlertCircle className="h-5 w-5 text-destructive mt-0.5 flex-shrink-0" />
             <div className="flex-1">
@@ -342,7 +342,7 @@ export function NoteEditor() {
       )}
 
       {/* Top Toolbar */}
-      <div className="flex-shrink-0 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="flex items-center justify-between px-6 py-3">
           {/* Title Input */}
           <div className="flex-1 max-w-2xl">
@@ -448,29 +448,29 @@ export function NoteEditor() {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex min-h-0">
+      <div className={`flex-1 flex ${showPreview ? '' : ''}`} style={{ paddingBottom: '60px' }}>
         {/* Editor */}
-        <div className={`flex-1 flex flex-col min-h-0 ${showPreview ? 'min-w-0' : 'w-full'}`}>
+        <div className={`flex-1 flex flex-col ${showPreview ? 'min-w-0' : 'w-full'}`}>
           <textarea
             ref={contentTextareaRef}
             value={note.content}
             onChange={(e) => setNote({ ...note, content: e.target.value })}
             placeholder="Start writing your note... (Custom markup supported)"
-            className="flex-1 w-full p-6 bg-transparent border-none outline-none resize-none font-mono text-sm leading-relaxed placeholder:text-muted-foreground overflow-auto"
+            className="flex-1 w-full p-6 bg-transparent border-none outline-none resize-none font-mono text-sm leading-relaxed placeholder:text-muted-foreground"
             style={{ minHeight: 0 }}
           />
         </div>
 
         {/* Preview */}
         {showPreview && (
-          <div className="border-l border-border flex-shrink-0 min-h-0">
+          <div className="border-l border-border flex-shrink-0">
             <PreviewPane note={note} paperWidth={paperWidth} />
           </div>
         )}
       </div>
 
       {/* Markup Tips - Fixed at bottom */}
-      <div className="flex-shrink-0 bg-muted/30">
+      <div className="absolute bottom-0 left-0 right-0 bg-muted/30 z-10">
         <MarkupTips />
       </div>
     </div>

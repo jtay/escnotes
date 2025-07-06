@@ -46,7 +46,7 @@ export function PreviewPane({ note, paperWidth, className }: PreviewPaneProps) {
       </div>
 
       {/* Preview content */}
-      <div className="flex-1 overflow-auto min-h-0">
+      <div className="flex-1 overflow-auto">
         <div 
           className="p-6 font-mono text-sm leading-relaxed bg-background"
           style={{ 

@@ -18,7 +18,7 @@ function App() {
             <Navigation />
             <div className="flex flex-1 overflow-hidden">
               <Sidebar />
-              <main className="flex-1">
+              <main className="flex-1 overflow-auto">
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/notes" element={<Navigate to="/" replace />} />
