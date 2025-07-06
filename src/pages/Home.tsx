@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { FileText, Github, GithubIcon, LucideGithub, Plus, Printer } from "lucide-react";
+import { LucideGithub, Plus, Printer } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAutosave } from "@/providers/autosave-provider";
 import { useEffect } from "react";

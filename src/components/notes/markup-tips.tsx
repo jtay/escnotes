@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { getMarkupPreview } from "@/lib/markup-parser";
-import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp, HelpCircle } from "lucide-react";
 
 interface MarkupTip {

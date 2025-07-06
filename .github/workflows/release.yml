@@ -1,0 +1,94 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'package.json'
+      - 'src-tauri/tauri.conf.json'
+      - 'src/**'
+      - 'src-tauri/src/**'
+      - '.github/workflows/release.yml'
+
+jobs:
+  build-and-release:
+    runs-on: macos-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: aarch64-apple-darwin
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Get version from package.json
+        id: version
+        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+        
+      - name: Check if version changed
+        id: check_version
+        run: |
+          # Get the latest release version
+          LATEST_VERSION=$(gh release list --limit 1 --json tagName --jq '.[0].tagName' 2>/dev/null || echo "v0.0.0")
+          LATEST_VERSION=${LATEST_VERSION#v}
+          
+          if [ "${{ steps.version.outputs.version }}" != "$LATEST_VERSION" ]; then
+            echo "version_changed=true" >> $GITHUB_OUTPUT
+            echo "Version changed from $LATEST_VERSION to ${{ steps.version.outputs.version }}"
+          else
+            echo "version_changed=false" >> $GITHUB_OUTPUT
+            echo "Version unchanged: ${{ steps.version.outputs.version }}"
+          fi
+          
+      - name: Build Tauri app
+        if: steps.check_version.outputs.version_changed == 'true'
+        run: npm run tauri build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Create Release
+        if: steps.check_version.outputs.version_changed == 'true'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: Release v${{ steps.version.outputs.version }}
+          body: |
+            ## What's Changed
+            
+            Automated release for version ${{ steps.version.outputs.version }}
+            
+            ### Download
+            - **macOS (Apple Silicon)**: Download the DMG file above
+            
+            ### Installation
+            1. Download the DMG file
+            2. Double-click to mount
+            3. Drag EscNotes to your Applications folder
+            4. Launch from Applications
+            
+            ### Features
+            - Custom markup for rich ESC/POS output
+            - Autosave notes
+            - Live print preview
+            - Dark mode
+            - Notes search
+            - 100% offline
+          files: |
+            src-tauri/target/release/bundle/dmg/*.dmg
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 

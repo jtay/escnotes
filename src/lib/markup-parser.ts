@@ -78,10 +78,7 @@ export function wrapTextWithHtml(text: string, width: number): string {
   return wrappedLines.join('\n');
 }
 
-// Helper function to get the actual character length of text (ignoring HTML tags)
-function getTextLength(text: string): number {
-  return text.replace(/<[^>]*>/g, '').length;
-}
+
 
 export function parseMarkupToHtml(text: string, options: MarkupOptions = {}): string {
   const { paperWidth = 48 } = options;
