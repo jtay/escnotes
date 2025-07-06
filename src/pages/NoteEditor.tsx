@@ -42,6 +42,8 @@ export function NoteEditor() {
   const originalNoteRef = useRef<Note | null>(null);
   const titleInputRef = useRef<HTMLInputElement>(null);
   const contentTextareaRef = useRef<HTMLTextAreaElement>(null);
+  const shouldRestoreFocusRef = useRef(false);
+  const cursorPositionRef = useRef<number>(0);
   
   // Global autosave state
   const { startSaving, finishSaving, setLastSaved, setHasUnsavedChanges, setShouldShowAutosave } = useAutosave();
@@ -103,8 +105,15 @@ export function NoteEditor() {
       // If this was a new note that just got saved for the first time, navigate to the saved note
       if (isNewNote.current && !hasBeenSavedOnce.current) {
         hasBeenSavedOnce.current = true;
+        // Check if content textarea currently has focus and capture cursor position
+        shouldRestoreFocusRef.current = document.activeElement === contentTextareaRef.current;
+        if (shouldRestoreFocusRef.current && contentTextareaRef.current) {
+          cursorPositionRef.current = contentTextareaRef.current.selectionStart;
+        }
         // Navigate to the saved note to update the URL and trigger sidebar refresh
         navigate(`/notes/${noteToSave.id}`, { replace: true });
+        // Mark as no longer a new note after navigation
+        isNewNote.current = false;
       }
     } catch (error) {
       console.error("Failed to save note:", error);
@@ -175,6 +184,24 @@ export function NoteEditor() {
     setShouldShowAutosave(true);
   }, [setShouldShowAutosave]);
 
+  // Restore focus after URL navigation for new notes
+  useEffect(() => {
+    if (shouldRestoreFocusRef.current && contentTextareaRef.current) {
+      // Use a small delay to ensure the component has re-rendered
+      const timeoutId = setTimeout(() => {
+        const textarea = contentTextareaRef.current;
+        if (textarea) {
+          textarea.focus();
+          // Restore cursor position
+          textarea.setSelectionRange(cursorPositionRef.current, cursorPositionRef.current);
+          shouldRestoreFocusRef.current = false;
+        }
+      }, 10);
+      
+      return () => clearTimeout(timeoutId);
+    }
+  }, [id]); // Trigger when the id changes (which happens after navigation)
+
   // Debounced save effect
   useEffect(() => {
     if (storeLoading) return;
@@ -201,7 +228,6 @@ export function NoteEditor() {
     // For new notes: save immediately when there's both title and content
     if (isNewNote.current && note.title.trim() && note.content.trim()) {
       saveNoteToStore(note);
-      isNewNote.current = false;
       return;
     }
 
