@@ -46,11 +46,11 @@ export function MarkupTips() {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div className="border-t border-border bg-muted/30">
+    <div className="bg-background border-t border-border shadow-[0_-2px_4px_-1px_rgba(0,0,0,0.05)]">
       {/* Toggle Button */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full px-4 py-2 flex items-center justify-between text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200"
+        className="w-full px-4 py-2 h-11 flex items-center justify-between text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200"
       >
         <div className="flex items-center space-x-2">
           <HelpCircle className="h-4 w-4" />
@@ -65,7 +65,7 @@ export function MarkupTips() {
 
       {/* Expandable Content */}
       {isExpanded && (
-        <div className="p-4 opacity-100 transition-all ease-in-out duration-300">
+        <div className="p-4 transition-all ease-in-out duration-300">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {MARKUP_TIPS.map((tip, index) => (
               <div

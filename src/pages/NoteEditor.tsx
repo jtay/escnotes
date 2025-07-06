@@ -345,10 +345,10 @@ export function NoteEditor() {
   }
 
   return (
-    <div className="h-screen flex flex-col relative">
+    <div className="h-screen w-full relative">
       {/* Print Error Alert */}
       {printError && (
-        <div className="bg-destructive/10 border-b border-destructive/20 p-4">
+        <div className="absolute top-0 left-0 right-0 z-20 bg-destructive/10 border-b border-destructive/20 p-4">
           <div className="flex items-start space-x-3">
             <AlertCircle className="h-5 w-5 text-destructive mt-0.5 flex-shrink-0" />
             <div className="flex-1">
@@ -368,7 +368,7 @@ export function NoteEditor() {
       )}
 
       {/* Top Toolbar */}
-      <div className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className={`absolute top-0 left-0 right-0 z-10 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 ${printError ? 'top-20' : ''}`}>
         <div className="flex items-center justify-between px-6 py-3">
           {/* Title Input */}
           <div className="flex-1 max-w-2xl">
@@ -474,29 +474,33 @@ export function NoteEditor() {
       </div>
 
       {/* Main Content Area */}
-      <div className={`flex-1 flex ${showPreview ? '' : ''}`} style={{ paddingBottom: '60px' }}>
-        {/* Editor */}
-        <div className={`flex-1 flex flex-col ${showPreview ? 'min-w-0' : 'w-full'}`}>
-          <textarea
-            ref={contentTextareaRef}
-            value={note.content}
-            onChange={(e) => setNote({ ...note, content: e.target.value })}
-            placeholder="Start writing your note... (Custom markup supported)"
-            className="flex-1 w-full p-6 bg-transparent border-none outline-none resize-none font-mono text-sm leading-relaxed placeholder:text-muted-foreground"
-            style={{ minHeight: 0 }}
-          />
-        </div>
-
-        {/* Preview */}
-        {showPreview && (
-          <div className="border-l border-border flex-shrink-0">
-            <PreviewPane note={note} paperWidth={paperWidth} />
+      <div className={`absolute top-0 left-0 right-0 bottom-0 ${printError ? 'top-20' : ''}`} style={{ top: printError ? '80px' : '60px' }}>
+        <div className="h-full flex">
+          {/* Editor */}
+          <div className={`flex-1 flex flex-col ${showPreview ? 'border-r border-border' : ''}`}>
+            <textarea
+              ref={contentTextareaRef}
+              value={note.content}
+              onChange={(e) => setNote({ ...note, content: e.target.value })}
+              placeholder="Start writing your note... (Custom markup supported)"
+              className="flex-1 w-full p-6 bg-transparent border-none outline-none resize-none font-mono text-sm leading-relaxed placeholder:text-muted-foreground overflow-y-auto"
+              style={{ paddingBottom: '120px' }} // Add padding to prevent content from being hidden behind markup tips
+            />
           </div>
-        )}
+
+          {/* Preview */}
+          {showPreview && (
+            <div className="w-1/2 flex-shrink-0 flex flex-col">
+              <div className="flex-1 overflow-y-auto">
+                <PreviewPane note={note} paperWidth={paperWidth} />
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Markup Tips - Fixed at bottom */}
-      <div className="absolute bottom-0 left-0 right-0 bg-muted/30 z-10">
+      {/* Markup Tips - Fixed at bottom of note editor area */}
+      <div className="fixed bottom-0 z-30" style={{ left: '320px', right: '0px' }}>
         <MarkupTips />
       </div>
     </div>

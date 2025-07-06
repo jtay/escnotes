@@ -112,7 +112,7 @@ export function Sidebar() {
       </div>
 
       {/* Footer - Fixed */}
-      <div className="flex-shrink-0">
+      <div className="flex-shrink-0 shadow-[0_-2px_4px_-1px_rgba(0,0,0,0.05)]">
         <Link to="/settings">
           <Button 
             variant="ghost" 
