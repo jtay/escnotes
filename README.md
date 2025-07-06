@@ -22,7 +22,9 @@ Any outside contribution is much appreciated! There is lots of low-hanging fruit
 
 
 ## Screenshots
-(coming soon)
+![Editing a Note](https://n3voa7iw09.ufs.sh/f/77uq7v2CF9iE2UcucZrePtRQciqmEWKjxBDVwI5ae9C6pF1b)
+![Note Print Preview](https://n3voa7iw09.ufs.sh/f/77uq7v2CF9iENbXJ36w8LjAITy1inQPgxOJfuz0YhcbHZmG7)
+![Changing Settings in Light Mode](https://n3voa7iw09.ufs.sh/f/77uq7v2CF9iEd2ExzJm2RUzJjn61CVk4XENQA8deoy7Kh0Gq)
 
 ##### Upcoming Features
 - <s>Import/Export notes as markdown</s> (coming)

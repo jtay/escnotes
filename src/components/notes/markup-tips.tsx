@@ -16,11 +16,6 @@ const MARKUP_TIPS: MarkupTip[] = [
     example: "<bold>Bold text</bold>"
   },
   {
-    code: "<large>text</large>",
-    description: "Large text",
-    example: "<large>Large text</large>"
-  },
-  {
     code: "<center>text</center>",
     description: "Centered text",
     example: "<center>Centered text</center>"
@@ -39,7 +34,12 @@ const MARKUP_TIPS: MarkupTip[] = [
     code: "<cut>",
     description: "Cut line",
     example: "*cuts paper*"
-  }
+  },
+  {
+    code: "<large>text</large>",
+    description: "Large text",
+    example: "<large>Large text</large>"
+  },
 ];
 
 export function MarkupTips() {
@@ -70,7 +70,7 @@ export function MarkupTips() {
             {MARKUP_TIPS.map((tip, index) => (
               <div
                 key={index}
-                className="bg-background border border-border rounded-lg overflow-hidden"
+                className="border border-border rounded-lg overflow-hidden bg-transparent"
               >
                 {/* Code Header */}
                 <div className="px-3 py-2 bg-muted/50 border-b border-border">
@@ -80,19 +80,28 @@ export function MarkupTips() {
                 </div>
                 
                 {/* Print Preview */}
-                <div className="p-3 bg-white">
-                  <div 
+                <div
+                  className="p-3"
+                  style={{
+                    backgroundColor: '#fff',
+                    minHeight: '2.5em',
+                    borderBottomLeftRadius: '0.5rem',
+                    borderBottomRightRadius: '0.5rem',
+                    border: 'none'
+                  }}
+                >
+                  <div
                     className="text-xs font-mono leading-tight"
-                    style={{ 
+                    style={{
                       fontFamily: 'monospace',
                       fontSize: '10px',
                       lineHeight: '1.2',
                       whiteSpace: 'pre-wrap',
-                      color: '#000000',
-                      backgroundColor: '#ffffff'
+                      color: '#000',
+                      backgroundColor: '#fff'
                     }}
-                    dangerouslySetInnerHTML={{ 
-                      __html: getMarkupPreview(tip.example, 32) 
+                    dangerouslySetInnerHTML={{
+                      __html: getMarkupPreview(tip.example, 32)
                     }}
                   />
                 </div>
