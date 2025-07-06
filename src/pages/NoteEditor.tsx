@@ -490,7 +490,7 @@ export function NoteEditor() {
 
           {/* Preview */}
           {showPreview && (
-            <div className="w-1/2 flex-shrink-0 flex flex-col">
+            <div className="flex-shrink-0 flex flex-col">
               <div className="flex-1 overflow-y-auto">
                 <PreviewPane note={note} paperWidth={paperWidth} />
               </div>

@@ -3,7 +3,9 @@
   "identifier": "default-capability",
   "description": "Default capabilities for the application",
   "local": true,
-  "windows": ["main"],
+  "windows": [
+    "main"
+  ],
   "permissions": [
     "core:path:default",
     "core:event:default",
@@ -24,6 +26,7 @@
     "store:allow-entries",
     "store:allow-length",
     "store:allow-load",
-    "store:allow-save"
+    "store:allow-save",
+    "opener:default"
   ]
 }

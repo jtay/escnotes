@@ -95,8 +95,8 @@ export function Sidebar() {
                     <p className={`text-xs truncate mt-1 ${
                       isActive(note.id) ? "text-primary/70" : "text-muted-foreground"
                     }`}>
-                      {note.content.substring(0, 60)}
-                      {note.content.length > 60 && "..."}
+                      {note.content.replace(/<[^>]*>/g, '').replace(/\n/g, ' ').substring(0, 60)}
+                      {note.content.replace(/<[^>]*>/g, '').replace(/\n/g, ' ').length > 60 && "..."}
                     </p>
                     <p className={`text-xs mt-1 ${
                       isActive(note.id) ? "text-primary/60" : "text-muted-foreground"

@@ -46,30 +46,32 @@ export function PreviewPane({ note, paperWidth, className }: PreviewPaneProps) {
       </div>
 
       {/* Preview content */}
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-auto" style={{ backgroundColor: '#ffffff' }}>
         <div 
-          className="p-6 font-mono text-sm leading-relaxed bg-background"
+          className="p-6 font-mono text-sm leading-relaxed h-full"
           style={{ 
             fontFamily: 'monospace',
             fontSize: '12px',
             lineHeight: '1.4',
             whiteSpace: 'pre-wrap',
             wordBreak: 'break-word',
-            color: 'hsl(var(--foreground))',
-            backgroundColor: 'hsl(var(--background))',
+            color: '#000000',
+            backgroundColor: '#ffffff',
             width: '100%',
-            maxWidth: '100%'
+            maxWidth: '100%',
+            minHeight: '100%'
           }}
         >
           {/* Content */}
           <div 
             dangerouslySetInnerHTML={{ __html: previewContent }}
-            className="whitespace-pre-wrap"
+            className="whitespace-pre-wrap h-full"
             style={{
-              color: 'hsl(var(--foreground))',
-              backgroundColor: 'hsl(var(--background))',
+              color: '#000000',
+              backgroundColor: '#ffffff',
               width: '100%',
-              maxWidth: '100%'
+              maxWidth: '100%',
+              minHeight: '100%'
             }}
           />
         </div>

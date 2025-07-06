@@ -97,4 +97,75 @@ h1 {
   text-align: center;
 }
 
-/* Remove conflicting input styles - using Input component instead */
+/* Modern Scrollbar Styles */
+/* Apply to all scrollable elements */
+.overflow-auto,
+.overflow-y-auto,
+.overflow-x-auto,
+textarea,
+div[style*="overflow"] {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.3) transparent;
+}
+
+/* Webkit scrollbar styles */
+.overflow-auto::-webkit-scrollbar,
+.overflow-y-auto::-webkit-scrollbar,
+.overflow-x-auto::-webkit-scrollbar,
+textarea::-webkit-scrollbar,
+div[style*="overflow"]::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background: transparent;
+}
+
+.overflow-auto::-webkit-scrollbar-track,
+.overflow-y-auto::-webkit-scrollbar-track,
+.overflow-x-auto::-webkit-scrollbar-track,
+textarea::-webkit-scrollbar-track,
+div[style*="overflow"]::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.overflow-auto::-webkit-scrollbar-thumb,
+.overflow-y-auto::-webkit-scrollbar-thumb,
+.overflow-x-auto::-webkit-scrollbar-thumb,
+textarea::-webkit-scrollbar-thumb,
+div[style*="overflow"]::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.3);
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.overflow-auto::-webkit-scrollbar-thumb:hover,
+.overflow-y-auto::-webkit-scrollbar-thumb:hover,
+.overflow-x-auto::-webkit-scrollbar-thumb:hover,
+textarea::-webkit-scrollbar-thumb:hover,
+div[style*="overflow"]::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.5);
+}
+
+/* Dark theme */
+.dark .overflow-auto,
+.dark .overflow-y-auto,
+.dark .overflow-x-auto,
+.dark textarea,
+.dark div[style*="overflow"] {
+  scrollbar-color: rgba(209, 213, 219, 0.3) transparent;
+}
+
+.dark .overflow-auto::-webkit-scrollbar-thumb,
+.dark .overflow-y-auto::-webkit-scrollbar-thumb,
+.dark .overflow-x-auto::-webkit-scrollbar-thumb,
+.dark textarea::-webkit-scrollbar-thumb,
+.dark div[style*="overflow"]::-webkit-scrollbar-thumb {
+  background: rgba(209, 213, 219, 0.3);
+}
+
+.dark .overflow-auto::-webkit-scrollbar-thumb:hover,
+.dark .overflow-y-auto::-webkit-scrollbar-thumb:hover,
+.dark .overflow-x-auto::-webkit-scrollbar-thumb:hover,
+.dark textarea::-webkit-scrollbar-thumb:hover,
+.dark div[style*="overflow"]::-webkit-scrollbar-thumb:hover {
+  background: rgba(209, 213, 219, 0.5);
+}
