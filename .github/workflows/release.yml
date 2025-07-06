@@ -53,6 +53,10 @@ jobs:
             echo "Version unchanged: ${{ steps.version.outputs.version }}"
           fi
           
+      - name: Sync version to tauri.conf.json
+        run: |
+          node -e "const fs = require('fs'); const v = require('./package.json').version; const conf = JSON.parse(fs.readFileSync('src-tauri/tauri.conf.json', 'utf8')); conf.version = v; fs.writeFileSync('src-tauri/tauri.conf.json', JSON.stringify(conf, null, 2)); console.log('Updated tauri.conf.json version to', v);"
+          
       - name: Build Tauri app
         if: steps.check_version.outputs.version_changed == 'true'
         run: npm run tauri build
