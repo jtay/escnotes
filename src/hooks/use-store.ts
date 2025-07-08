@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { load } from "@tauri-apps/plugin-store";
-import type { Note, PrinterSettings } from "@/types/note";
+import type { Note, PrinterSettings, SidebarFilterSettings } from "@/types/note";
 
 export function useStore() {
   const [isLoading, setIsLoading] = useState(true);
@@ -124,6 +124,41 @@ export function useStore() {
     }
   };
 
+  const getSidebarFilterSettings = async (): Promise<SidebarFilterSettings> => {
+    if (!store) {
+      return {
+        searchTerm: "",
+        sortOrder: "desc",
+        sortField: "lastModified"
+      };
+    }
+    try {
+      return (await store.get('sidebarFilterSettings')) || {
+        searchTerm: "",
+        sortOrder: "desc",
+        sortField: "lastModified"
+      };
+    } catch (error) {
+      console.error("Failed to get sidebar filter settings:", error);
+      return {
+        searchTerm: "",
+        sortOrder: "desc",
+        sortField: "lastModified"
+      };
+    }
+  };
+
+  const saveSidebarFilterSettings = async (settings: SidebarFilterSettings): Promise<void> => {
+    if (!store) throw new Error("Store not initialized");
+    try {
+      await store.set('sidebarFilterSettings', settings);
+      await store.save();
+    } catch (error) {
+      console.error("Failed to save sidebar filter settings:", error);
+      throw error;
+    }
+  };
+
   return {
     isLoading,
     getNotes,
@@ -132,6 +167,8 @@ export function useStore() {
     getNote,
     getPrinterSettings,
     savePrinterSettings,
+    getSidebarFilterSettings,
+    saveSidebarFilterSettings,
     refreshTrigger
   };
 } 

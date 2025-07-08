@@ -1,22 +1,75 @@
 import { useState, useEffect, useCallback } from "react";
-import { Plus, Settings, Search } from "lucide-react";
+import { Plus, Settings, Search, ArrowUp, ArrowDown, SortAsc, Clock, FileText, HardDrive } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuLabel
+} from "@/components/ui/dropdown-menu";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "@/hooks/use-store";
-import type { Note } from "@/types/note";
+import type { Note, SidebarFilterSettings } from "@/types/note";
+
+type SortField = "lastModified" | "title" | "size";
 
 export function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { getNotes, isLoading, refreshTrigger } = useStore();
+  const { getNotes, isLoading, refreshTrigger, getSidebarFilterSettings, saveSidebarFilterSettings } = useStore();
   const [notes, setNotes] = useState<Note[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [sortOrder, setSortOrder] = useState<"desc" | "asc">("desc");
+  const [sortField, setSortField] = useState<SortField>("lastModified");
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const loadNotes = useCallback(async () => {
     const allNotes = await getNotes();
     setNotes(allNotes);
   }, [getNotes]);
+
+  // Load persisted filter settings on component mount
+  useEffect(() => {
+    const loadFilterSettings = async () => {
+      if (!isLoading && isInitialLoad) {
+        try {
+          const settings = await getSidebarFilterSettings();
+          setSearchTerm(settings.searchTerm);
+          setSortOrder(settings.sortOrder);
+          setSortField(settings.sortField);
+        } catch (error) {
+          console.error("Failed to load sidebar filter settings:", error);
+        } finally {
+          setIsInitialLoad(false);
+        }
+      }
+    };
+    
+    loadFilterSettings();
+  }, [isLoading, isInitialLoad]);
+
+  // Save filter settings whenever they change (but not during initial load)
+  useEffect(() => {
+    if (!isLoading && !isInitialLoad) {
+      const saveFilterSettings = async () => {
+        try {
+          const settings: SidebarFilterSettings = {
+            searchTerm,
+            sortOrder,
+            sortField
+          };
+          await saveSidebarFilterSettings(settings);
+        } catch (error) {
+          console.error("Failed to save sidebar filter settings:", error);
+        }
+      };
+      
+      saveFilterSettings();
+    }
+  }, [searchTerm, sortOrder, sortField, isLoading, isInitialLoad]);
 
   useEffect(() => {
     if (!isLoading) {
@@ -31,14 +84,62 @@ export function Sidebar() {
     }
   }, [location.pathname, isLoading, refreshTrigger, loadNotes]);
 
-  const filteredNotes = notes.filter(note =>
-    note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    note.content.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredNotes = notes
+    .filter(note =>
+      note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      note.content.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+      let comparison = 0;
+      
+      switch (sortField) {
+        case "lastModified":
+          const dateA = new Date(a.updatedAt).getTime();
+          const dateB = new Date(b.updatedAt).getTime();
+          comparison = dateB - dateA;
+          break;
+        case "title":
+          comparison = (a.title || "Untitled").localeCompare(b.title || "Untitled");
+          break;
+        case "size":
+          const sizeA = a.content.length;
+          const sizeB = b.content.length;
+          comparison = sizeB - sizeA;
+          break;
+      }
+      
+      return sortOrder === "desc" ? comparison : -comparison;
+    });
 
   const isActive = (noteId: string) => {
     return location.pathname === `/notes/${noteId}` || 
            location.pathname === `/notes/${noteId}/print`;
+  };
+
+  const toggleSortOrder = () => {
+    setSortOrder(prev => prev === "desc" ? "asc" : "desc");
+  };
+
+  const getSortIcon = () => {
+    switch (sortField) {
+      case "lastModified":
+        return <Clock className="h-4 w-4" />;
+      case "title":
+        return <FileText className="h-4 w-4" />;
+      case "size":
+        return <HardDrive className="h-4 w-4" />;
+    }
+  };
+
+  const getSortLabel = () => {
+    switch (sortField) {
+      case "lastModified":
+        return "Last Modified";
+      case "title":
+        return "Title";
+      case "size":
+        return "Size";
+    }
   };
 
   return (
@@ -47,14 +148,68 @@ export function Sidebar() {
       <div className="p-4 border-b flex-shrink-0">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold">Notes</h2>
-          <Button
-            size="sm"
-            variant="default"
-            onClick={() => navigate("/notes/new")}
-            leftIcon={<Plus className="h-4 w-4" />}
-          >
-            New
-          </Button>
+          <div className="flex items-center gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="px-2 gap-1"
+                >
+                  {getSortIcon()}
+                  {sortOrder === "desc" ? (
+                    <ArrowDown className="h-3 w-3" />
+                  ) : (
+                    <ArrowUp className="h-3 w-3" />
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Sort by</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onSelect={(e) => { e.preventDefault(); setSortField("lastModified"); }}>
+                  <Clock className="h-4 w-4 mr-2" />
+                  Last Modified
+                  {sortField === "lastModified" && (
+                    <div className="ml-auto">
+                      {sortOrder === "desc" ? <ArrowDown className="h-3 w-3" /> : <ArrowUp className="h-3 w-3" />}
+                    </div>
+                  )}
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={(e) => { e.preventDefault(); setSortField("title"); }}>
+                  <FileText className="h-4 w-4 mr-2" />
+                  Title
+                  {sortField === "title" && (
+                    <div className="ml-auto">
+                      {sortOrder === "desc" ? <ArrowDown className="h-3 w-3" /> : <ArrowUp className="h-3 w-3" />}
+                    </div>
+                  )}
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={(e) => { e.preventDefault(); setSortField("size"); }}>
+                  <HardDrive className="h-4 w-4 mr-2" />
+                  Size
+                  {sortField === "size" && (
+                    <div className="ml-auto">
+                      {sortOrder === "desc" ? <ArrowDown className="h-3 w-3" /> : <ArrowUp className="h-3 w-3" />}
+                    </div>
+                  )}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onSelect={(e) => { e.preventDefault(); toggleSortOrder(); }}>
+                  <SortAsc className="h-4 w-4 mr-2" />
+                  Toggle Order ({sortOrder === "desc" ? "Desc" : "Asc"})
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Button
+              size="sm"
+              variant="default"
+              onClick={() => navigate("/notes/new")}
+              leftIcon={<Plus className="h-4 w-4" />}
+            >
+              New
+            </Button>
+          </div>
         </div>
         
         {/* Search */}
