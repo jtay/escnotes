@@ -130,18 +130,7 @@ export function Sidebar() {
         return <HardDrive className="h-4 w-4" />;
     }
   };
-
-  const getSortLabel = () => {
-    switch (sortField) {
-      case "lastModified":
-        return "Last Modified";
-      case "title":
-        return "Title";
-      case "size":
-        return "Size";
-    }
-  };
-
+  
   return (
     <div className="w-80 border-r bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex flex-col h-full">
       {/* Header - Fixed */}
